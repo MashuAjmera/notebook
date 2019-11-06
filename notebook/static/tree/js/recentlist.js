@@ -9,7 +9,7 @@ define([
 ], function($, IPython, notebooklist, i18n) {
     "use strict";
     
-    var KernelList = function (selector, options) {
+    var RecentList = function (selector, options) {//mru
         /**
          * Constructor
          *
@@ -22,21 +22,21 @@ define([
          *          notebook_path: string
          */
         notebooklist.NotebookList.call(this, selector, $.extend({
-            element_name: 'running'},
+            element_name: 'running'},//mru
             options));
         this.kernelspecs = this.sessions = null;
         this.events.on('kernelspecs_loaded.KernelSpec', $.proxy(this._kernelspecs_loaded, this));
     };
 
-    KernelList.prototype = Object.create(notebooklist.NotebookList.prototype);
+    RecentList.prototype = Object.create(notebooklist.NotebookList.prototype);//mru
 
-    KernelList.prototype.add_duplicate_button = function () {
+    RecentList.prototype.add_duplicate_button = function () {//mru
         /**
          * do nothing
          */
     };
     
-    KernelList.prototype._kernelspecs_loaded = function (event, kernelspecs) {
+    RecentList.prototype._kernelspecs_loaded = function (event, kernelspecs) {//mru
         this.kernelspecs = kernelspecs;
         if (this.sessions) {
             // trigger delayed session load, since kernelspecs arrived later
@@ -44,7 +44,7 @@ define([
         }
     };
     
-    KernelList.prototype.sessions_loaded = function (d) {
+    RecentList.prototype.sessions_loaded = function (d) {//mru
         this.sessions = d;
         if (!this.kernelspecs) {
             return; // wait for kernelspecs before first load
@@ -66,10 +66,10 @@ define([
                 kernel_display_name: (info && info.spec) ? info.spec.display_name : session.kernel.name
             }, item);
         }
-        $('#running_list_placeholder').toggle($.isEmptyObject(d));
+        $('#recent_list_placeholder').toggle($.isEmptyObject(d));//mru
     };
 
-    KernelList.prototype.add_link = function (model, item) {
+    RecentList.prototype.add_link = function (model, item) {//mru
         notebooklist.NotebookList.prototype.add_link.apply(this, [model, item]);
 
         var running_indicator = item.find(".item_buttons")
@@ -92,7 +92,7 @@ define([
     };
     
     // Backwards compatibility.
-    IPython.KernelList = KernelList;
+    IPython.RecentList = RecentList;//mru
 
-    return {'KernelList': KernelList};
+    return {'RecentList': RecentList};//mru
 });
